@@ -7,26 +7,37 @@ This action uses `npx` to run the `@taleshape/shaper` package and execute `shape
 ### Usage
 
 ```yaml
-name: Deploy Shaper Dashboards
+name: Deploy and Validate Shaper Dashboards
 
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  deploy-shaper:
+  validate:
+    name: Validate on PRs
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - name: Validate Shaper Dashboards
+        uses: taleshape-com/shaper-deploy-action@v1
+        with:
+          validate-only: true
+          api-key: ${{ secrets.SHAPER_DEPLOY_API_KEY }}
 
+  deploy:
+    name: Deploy on main
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Deploy Shaper Dashboards
         uses: taleshape-com/shaper-deploy-action@v1
         with:
           api-key: ${{ secrets.SHAPER_DEPLOY_API_KEY }}
-          shaper-version: "0.12.0"
-          config-file: "./shaper.json"
-          validate-only: false
 ```
 
 ### Inputs
@@ -49,31 +60,6 @@ jobs:
 
 - **working-directory** (optional, default: `.`):
   - Directory (relative to the repository root) where the `shaper deploy` command should be executed.
-
-### Example: validate only in pull requests
-
-```yaml
-name: Validate Shaper Dashboards
-
-on:
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  validate-shaper:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Validate Shaper Dashboards
-        uses: taleshape-com/shaper-deploy-action@v1
-        with:
-          api-key: ${{ secrets.SHAPER_DEPLOY_API_KEY }}
-          shaper-version: "0.12.0"
-          config-file: "./shaper.json"
-          validate-only: true
-```
 
 ### License
 
