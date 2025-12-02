@@ -1,6 +1,6 @@
 ## Shaper Deploy GitHub Action
 
-Deploy Shaper dashboards from configuration files in your repository using the `@taleshape/shaper` CLI.
+Deploy [Shaper](https://github.com/taleshape-com/shaper) dashboards from configuration files in your repository using the `shaper` CLI.
 
 This action uses `npx` to run the `@taleshape/shaper` package and execute `shaper deploy` in your repository.
 
@@ -31,18 +31,16 @@ jobs:
 
 ### Inputs
 
-- **api-key** (optional):
+- **api-key**:
   - API key used to authenticate with the Shaper deploy API.
-  - If omitted, `SHAPER_DEPLOY_API_KEY` will not be set. Whether this is required depends on your Shaper configuration.
 
 - **shaper-version** (optional, default: `latest`):
-  - Version of `@taleshape/shaper` to use, e.g. `0.12.0`.
+  - Version of `@taleshape/shaper` npm package to use
   - If not provided, `latest` is used.
 
 - **config-file** (optional, default: `./shaper.json`):
   - Path to the Shaper configuration file.
   - If set to a non-empty value, it will be passed as `--config <value>` to `shaper deploy`.
-  - If set to an empty string, the `--config` flag is omitted entirely (Shaper will then use its own default behavior).
 
 - **validate-only** (optional, default: `false`):
   - If `true`, the action runs:
@@ -51,15 +49,6 @@ jobs:
 
 - **working-directory** (optional, default: `.`):
   - Directory (relative to the repository root) where the `shaper deploy` command should be executed.
-  - Use this for monorepos where the Shaper config lives in a subdirectory.
-
-### How it works
-
-- The action determines the working directory (default is the GitHub workspace root or `working-directory` if provided).
-- If `api-key` is provided, it is exported as `SHAPER_DEPLOY_API_KEY` for the `shaper` CLI.
-- It then runs:
-  - `npx --yes @taleshape/shaper@<shaper-version> deploy [--config <config-file>] [--validate-only]`
-- Any non-zero exit code from `shaper deploy` will fail the action.
 
 ### Example: validate only in pull requests
 
