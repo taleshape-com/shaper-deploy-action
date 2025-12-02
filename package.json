@@ -1,0 +1,15 @@
+{
+  "name": "@taleshape-com/shaper-deploy-action",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GitHub Action to deploy Shaper dashboards using @taleshape/shaper",
+  "main": "index.js",
+  "scripts": {
+    "lint": "echo 'no lint configured'",
+    "test": "echo 'no tests configured'"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}

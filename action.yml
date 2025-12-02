@@ -1,0 +1,28 @@
+name: 'Shaper Deploy Action'
+description: 'Deploy Shaper dashboards from configuration files using @taleshape/shaper'
+author: 'taleshape-com'
+
+inputs:
+  api-key:
+    description: 'API key used to authenticate with the Shaper deploy API. If omitted, SHAPER_DEPLOY_API_KEY will not be set.'
+    required: false
+  shaper-version:
+    description: 'Version of @taleshape/shaper to use (e.g. 0.12.0). Defaults to latest.'
+    required: false
+    default: 'latest'
+  config-file:
+    description: 'Path to the Shaper config file to pass via --config. If empty, --config will be omitted. Default: ./shaper.json'
+    required: false
+    default: './shaper.json'
+  validate-only:
+    description: 'If true, run shaper deploy with --validate-only to only validate, not deploy.'
+    required: false
+    default: 'false'
+  working-directory:
+    description: 'Working directory to run the deploy command in, relative to the repository root.'
+    required: false
+    default: '.'
+
+runs:
+  using: 'node20'
+  main: 'index.js'
