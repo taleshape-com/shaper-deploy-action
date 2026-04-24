@@ -9,7 +9,7 @@
     "test": "echo 'no tests configured'"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "license": "MIT"
 }
