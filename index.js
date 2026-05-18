@@ -3,7 +3,6 @@
 const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
-const semver = require('semver');
 
 function getInput(name, options = {}) {
   const envName = `INPUT_${name.replace(/ /g, '_').toUpperCase()}`;
@@ -25,6 +24,17 @@ function getAllDashboardFiles(dir, allFiles = []) {
     }
   }
   return allFiles;
+}
+
+function isGte(version, minVersion) {
+  if (version === 'latest') return true;
+  const v = version.split('-')[0].split('.').map(Number);
+  const m = minVersion.split('-')[0].split('.').map(Number);
+  for (let i = 0; i < 3; i++) {
+    if ((v[i] || 0) > (m[i] || 0)) return true;
+    if ((v[i] || 0) < (m[i] || 0)) return false;
+  }
+  return true;
 }
 
 async function execCommand(command, args, cwd, env) {
@@ -53,11 +63,17 @@ async function execCommand(command, args, cwd, env) {
 async function run() {
   try {
     const apiKey = getInput('api-key');
-    const shaperVersion = getInput('shaper-version', { default: 'latest' });
+    const shaperVersionInput = getInput('shaper-version', { default: 'latest' });
     const configFile = getInput('config-file', { default: './shaper.json' });
     const validateOnlyInput = getInput('validate-only', { default: 'false' });
     const workingDirectoryInput = getInput('working-directory', { default: '.' });
     const skipValidateInput = getInput('skip-validate', { default: 'false' });
+
+    // Security: Validate shaper-version to prevent npx injection
+    const shaperVersion = String(shaperVersionInput).trim();
+    if (shaperVersion !== 'latest' && !/^\d+\.\d+\.\d+(?:-[\w\.]+)?$/.test(shaperVersion)) {
+      throw new Error(`Invalid shaper-version: "${shaperVersion}". Must be "latest" or a valid semver (e.g., 0.20.0).`);
+    }
 
     const validateOnly = String(validateOnlyInput).toLowerCase() === 'true';
     const skipValidate = String(skipValidateInput).toLowerCase();
@@ -71,8 +87,7 @@ async function run() {
     }
 
     const MIN_VALIDATE_VERSION = '0.20.0';
-    const supportsValidate = shaperVersion === 'latest' ||
-      (semver.valid(shaperVersion) && semver.gte(shaperVersion, MIN_VALIDATE_VERSION));
+    const supportsValidate = isGte(shaperVersion, MIN_VALIDATE_VERSION);
 
     if (supportsValidate && skipValidate !== 'true') {
       const validateArgs = ['--yes', `@taleshape/shaper@${shaperVersion}`, 'validate'];

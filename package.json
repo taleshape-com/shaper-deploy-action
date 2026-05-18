@@ -11,8 +11,5 @@
   "engines": {
     "node": ">=24"
   },
-  "license": "MIT",
-  "dependencies": {
-    "semver": "^7.6.0"
-  }
+  "license": "MIT"
 }
