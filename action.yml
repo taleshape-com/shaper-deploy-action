@@ -7,7 +7,7 @@ inputs:
     description: "API key used to authenticate with the Shaper deploy API. If omitted, SHAPER_DEPLOY_API_KEY will not be set."
     required: false
   shaper-version:
-    description: "Version of @taleshape/shaper to use (e.g. 0.12.0). Defaults to latest."
+    description: "Version of @taleshape/shaper to use (e.g. 0.20.0). Defaults to latest."
     required: false
     default: "latest"
   config-file:
@@ -22,6 +22,10 @@ inputs:
     description: "Working directory to run the deploy command in, relative to the repository root."
     required: false
     default: "."
+  skip-validate:
+    description: "If true, skip the shaper validate step. Can also be a comma-separated list of files to exclude from validation."
+    required: false
+    default: "false"
 
 runs:
   using: "node24"

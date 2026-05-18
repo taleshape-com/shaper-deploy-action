@@ -61,6 +61,11 @@ jobs:
 - **working-directory** (optional, default: `.`):
   - Directory (relative to the repository root) where the `shaper deploy` command should be executed.
 
+- **skip-validate** (optional, default: `false`):
+  - If `true`, the `shaper validate` step is skipped.
+  - Can also be a comma-separated list of files to exclude from validation.
+  - Validation is automatically performed before deployment for `@taleshape/shaper` version `0.20.0` or later.
+
 ### License
 
 This project is licensed under the MIT License. See `LICENSE` for details.
